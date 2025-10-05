@@ -367,8 +367,130 @@ best_fit_habitat <- included_fits_habitat[[best_model_habitat_name]]
 print(best_fit_habitat)
 
 ```
+Model comparison table:
 
 <img width="893" height="288" alt="Screenshot 2025-10-05 at 7 11 55 PM" src="https://github.com/user-attachments/assets/3bf90ef8-d6b4-4a14-a06a-c45dcb95d48d" />
 
+Transitions of the best model (Symmetrical with 2 hidden states):
+
+<img width="1083" height="433" alt="Screenshot 2025-10-05 at 7 14 28 PM" src="https://github.com/user-attachments/assets/a11ca7a9-d2bf-47a3-a001-0b9ce9735f2a" />
+
+- very high transition rate between aquatic to terrestrial and terrestrial to aquatic
+
+## 3.4) Running models: only habitat (changing ip-values)
+
+```
+ER_1_ip_0.5 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 1, model = "ER", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.005)
+ER_1_ip_0.9 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 1, model = "ER", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.000000009)
+
+ER_2_ip_0.5 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "ER", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.005)
+ER_2_ip_0.9 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "ER", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.000000009)
+
+ER_3_ip_0.5 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 3, model = "ER", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.05)
+ER_3_ip_0.9 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 3, model = "ER", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.000000009)
+
+SYM_1_ip_0.5 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 1, model = "SYM", node.states = "marginal",
+                     nstarts = 48, n.cores = 48, get.tip.states = FALSE, ip=0.005)
+SYM_1_ip_0.09 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 1, model = "SYM", node.states = "marginal",
+                     nstarts = 48, n.cores = 48, get.tip.states = FALSE, ip=0.000000009)
+
+SYM_2_ip_0.5 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "SYM", node.states = "none",
+                     nstarts = 48, n.cores = 48, get.tip.states = FALSE, ip=0.005)
+SYM_2_ip_0.9 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "SYM", node.states = "marginal",
+                     nstarts = 48, n.cores = 48, get.tip.states = FALSE, ip=0.000000009)
+
+SYM_3_ip_0.5 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "SYM", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.005)
+SYM_3_ip_0.9 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "SYM", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.000000009)
+
+
+ARD_1_ip_0.5 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 1, model = "ARD", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.005)
+ARD_1_ip_0.9 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 1, model = "ARD", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.000000009)
+
+ARD_2_ip_0.5 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "ARD", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.005)
+ARD_2_ip_0.9 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "ARD", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.000000009)
+
+ARD_3_ip_0.5 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 3, model = "ARD", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.005)
+ARD_3_ip_0.9 <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 3, model = "ARD", node.states = "none",
+                     nstarts = 10, n.cores = 10, get.tip.states = FALSE, ip=0.000000009)
+
+## Now we will input the ip values obtained from the best model (symmetrical) to get a better chance of reaching the optimum likelihood 
+
+get_p <- function(idx,sol){
+  # turn into vector: index -> solution value
+  #vals <- numeric(max(idx, na.rm = TRUE))
+  vals <-c()
+  for (i in 1:max(idx, na.rm = TRUE)) {
+    # find where index.mat == i
+    pos <- which(idx == i, arr.ind = TRUE)
+    if(isFALSE(is.na(pos)[1])){
+      vals <- c(vals,sol[pos][1])
+      #vals[i] <- sol[pos]
+      # print(pos)
+      # print(sol[pos])
+    }
+  }
+  return(vals)
+}
+
+#including the transition values obtained from the results of fit_SYM_1.1.h as the initial ip-values
+
+rate.mat = fit_SYM_1.1.h$index.mat
+p = get_p(rate.mat, fit_SYM_1.1.h$solution)
+
+ER_1_ip_sym <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 1, model = "ER", node.states = "marginal",
+                     nstarts = 48, n.cores = 48, get.tip.states = FALSE, ip=p)
+
+SYM_1_ip_sym <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 1, model = "SYM", node.states = "marginal",
+                     nstarts = 48, n.cores = 48, get.tip.states = FALSE, ip=p)
+
+ARD_1_ip_sym <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 1, model = "ARD", node.states = "marginal",
+                     nstarts = 5, n.cores = 5, get.tip.states = FALSE, ip=p)
+
+
+#including the transition values obtained from the results of fit_SYM_2.1.h as the initial ip-values
+
+rate.mat = fit_SYM_3.1.h$index.mat
+p = get_p(rate.mat, fit_SYM_3.1.h$solution)
+
+rate.mat = fit_ARD_2.1.h$index.mat
+p = get_p(rate.mat, fit_ARD_2.1.h$solution)
+
+ER_2_ip_sym <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "ER", node.states = "none",
+                     nstarts = 5, n.cores = 10, get.tip.states = FALSE, ip=p)
+
+SYM_2_ip_sym <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "SYM", node.states = "none",
+                     nstarts = 5, n.cores = 10, get.tip.states = FALSE, ip=p)
+
+ARD_2_ip_sym <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 2, model = "ARD", node.states = "none",
+                     nstarts = 5, n.cores = 10, get.tip.states = FALSE, ip=p)
+
+
+#including the transition values obtained from the results of fit_SYM_3.1.h as the initial ip-values
+
+rate.mat = fit_SYM_3.1.h$index.mat
+p = get_p(rate.mat, fit_SYM_3.1.h$solution)
+
+ER_3_ip_sym <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 3, model = "ER", node.states = "none",
+                     nstarts = 5, n.cores = 10, get.tip.states = FALSE, ip=p)
+
+SYM_3_ip_sym <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 3, model = "SYM", node.states = "none",
+                     nstarts = 5, n.cores = 10, get.tip.states = FALSE, ip=p)
+
+ARD_3_ip_sym <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 3, model = "ARD", node.states = "none",
+                     nstarts = 5, n.cores = 10, get.tip.states = FALSE, ip=p)
+```
 
 
