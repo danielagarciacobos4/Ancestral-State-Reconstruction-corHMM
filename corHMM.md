@@ -493,4 +493,57 @@ ARD_3_ip_sym <- corHMM(pruned_tree_habitat, corhmm_data_habitat, rate.cat = 3, m
                      nstarts = 5, n.cores = 10, get.tip.states = FALSE, ip=p)
 ```
 
+## 3.5) Choosing models: only habitat (changing ip-values)
+```
+
+fit_results_habitat <- list(
+ ER_1 = fit_ER_1.1.h, ER_2 = fit_ER_2.1.h, ER_3 = fit_ER_3.1.h, ER_4 = fit_ER_4.1.h,
+ SYM_1 = fit_SYM_1.1.h, SYM_2 = fit_SYM_2.1.h, SYM_3 = fit_SYM_3.1.h,
+ ARD_1 = fit_ARD_1.1.h, ARD_2 = fit_ARD_2.1.h, ARD_3 = fit_ARD_3.1.h, ARD_4 = fit_ARD_4.1.h,
+ ER_1_ip_0.005 = ER_1_ip_0.5, ER_1_ip_0.0..09 = ER_1_ip_0.9, ER_2_ip_0.005 = ER_2_ip_0.5, ER_2_ip_0.0..09 = ER_2_ip_0.9, ER_3_ip_0.005 = ER_3_ip_0.5, ER_3_ip_0.0..09 = ER_3_ip_0.9, SYM_1_ip_0.005 = SYM_1_ip_0.5, SYM_1_ip_0.0..09 = SYM_1_ip_0.09, SYM_2_ip_0.005 = SYM_2_ip_0.5, SYM_2_ip_0.0..09 = SYM_2_ip_0.9, SYM_3_ip_0.005 = SYM_3_ip_0.5, ARD_1_ip_0.005 = ARD_1_ip_0.5, ARD_1_ip_0.0..09 = ARD_1_ip_0.9, ARD_2_ip_0.0..09 = ARD_2_ip_0.9, ER_1_ip_sym = ER_1_ip_sym, SYM_1_ip_sym = SYM_1_ip_sym, ARD_1_ip_sym = ARD_1_ip_sym, ER_2_ip_sym = ER_2_ip_sym, SYM_2_ip_sym = SYM_2_ip_sym, ARD_2_ip_sym = ARD_2_ip_sym, ER_3_ip_sym = ER_3_ip_sym, SYM_3_ip_sym = SYM_3_ip_sym, ARD_3_ip_sym = ARD_3_ip_sym)
+
+include_models_habitat <- c(ER_1 = TRUE, ER_2 = TRUE, ER_3 = TRUE, ER_4 = TRUE, SYM_1 = TRUE, SYM_2 = TRUE, SYM_3 = TRUE, SYM_4 = TRUE, ARD_1 = TRUE, ARD_2 = TRUE, ARD_3 = TRUE, ARD_4 = TRUE, ER_1_ip_0.005 = TRUE, ER_1_ip_0.0..09 = TRUE, ER_2_ip_0.005 = FALSE, ER_2_ip_0.0..09 = TRUE, ER_3_ip_0.005 = TRUE, ER_3_ip_0.0..09 = TRUE, SYM_1_ip_0.005 = TRUE, SYM_1_ip_0.0..09 = TRUE, SYM_2_ip_0.005 = TRUE, SYM_2_ip_0.0..09 = TRUE, SYM_3_ip_0.005 = TRUE, SYM_3_ip_0.0..09 = TRUE, ARD_1_ip_0.005 = TRUE, ARD_1_ip_0.0..09 = TRUE, ARD_2_ip_0.005 = TRUE, ARD_2_ip_0.0..09 = TRUE, ER_1_ip_sym = TRUE, SYM_1_ip_sym = TRUE, ARD_1_ip_sym = TRUE, ER_2_ip_sym = TRUE, SYM_2_ip_sym = TRUE, ARD_2_ip_sym = TRUE, ER_3_ip_sym = TRUE, SYM_3_ip_sym = TRUE, ARD_3_ip_sym = TRUE)
+
+included_fits_habitat <- fit_results_habitat#[include_models]
+
+aic_vals_habitat <- sapply(included_fits_habitat, function(x) x$AICc)
+log_liks_habitat <- sapply(included_fits_habitat, function(x) x$loglik)
+min_aic_habitat <- min(aic_vals_habitat)
+delta_aic_haitat <- aic_vals_habitat - min_aic_habitat
+aic_weights_habitat <- exp(-0.5 * delta_aic_haitat) / sum(exp(-0.5 * delta_aic_haitat))
+
+model_comparison_habitat <- data.frame(
+  Model = names(included_fits_habitat),
+  LogLik = log_liks_habitat,
+  AICc = aic_vals_habitat,
+  deltaAICc = delta_aic_haitat,
+  AICw = round(aic_weights_habitat, 4)
+)
+
+model_comparison_habitat <- model_comparison_habitat[order(model_comparison_habitat$AICc), ]
+print(model_comparison_habitat)
+
+
+write_xlsx(model_comparison_habitat, "model_comparison_habitat.xlsx")
+
+
+# p already exists
+target <- 0.2523565162
+tol    <- 1e-12          # tolerance for floating-point match
+
+p_new <- p
+idx   <- which.min(abs(p_new - target))  # find the closest entry
+p_new[idx] <- 1e-9
+
+# quick check (should be exactly one change)
+c(changed_index = idx, old_value = p[idx], new_value = p_new[idx])
+p_new <- p
+
+```
+
+<img width="513" height="659" alt="Screenshot 2025-10-05 at 8 41 02 PM" src="https://github.com/user-attachments/assets/e52d196c-b693-485f-a35d-21be38e2b84d" />
+
+
+
+
 
