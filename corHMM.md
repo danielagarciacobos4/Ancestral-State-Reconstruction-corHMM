@@ -544,6 +544,89 @@ p_new <- p
 <img width="513" height="659" alt="Screenshot 2025-10-05 at 8 41 02 PM" src="https://github.com/user-attachments/assets/e52d196c-b693-485f-a35d-21be38e2b84d" />
 
 
+## 3.6) Checking likelihood
 
+```
+
+get_p <- function(idx,sol){
+  # turn into vector: index -> solution value
+  #vals <- numeric(max(idx, na.rm = TRUE))
+  vals <-c()
+  for (i in 1:max(idx, na.rm = TRUE)) {
+    # find where index.mat == i
+    pos <- which(idx == i, arr.ind = TRUE)
+    if(isFALSE(is.na(pos)[1])){
+      vals <- c(vals,sol[pos][1])
+      #vals[i] <- sol[pos]
+      # print(pos)
+      # print(sol[pos])
+    }
+  }
+  return(vals)
+}
+
+phy= pruned_tree_cor
+
+rate.mat = fit_ER_1.1.h$index.mat
+p = get_p(rate.mat,fit_ER_1.1.h$solution)
+ER_1_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 1, rate.mat = rate.mat, p = p)
+ER_1_habitat_fixed$loglik #-404.783
+
+rate.mat = fit_SYM_1.1.h$index.mat
+p = get_p(rate.mat, fit_SYM_1.1.h$solution)
+SYM_1_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 1, rate.mat = rate.mat, p = p)
+SYM_1_habitat_fixed$loglik #-364.97
+
+rate.mat = fit_ARD_1.1.h$index.mat
+p = get_p(rate.mat, fit_ARD_1.1.h$solution)
+ARD_1_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 1, rate.mat = rate.mat, p = p)
+ARD_1_habitat_fixed$loglik  #-346.7207
+
+rate.mat = fit_ER_2.1.h$index.mat
+p = get_p(rate.mat, fit_ER_2.1.h$solution)
+ER_2_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 2, rate.mat = rate.mat, p = p)
+ER_2_habitat_fixed$loglik #-385.2713
+
+rate.mat = fit_SYM_2.1.h$index.mat
+p = get_p(rate.mat, fit_SYM_2.1.h$solution)
+SYM_2_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 2, rate.mat = rate.mat, p = p)
+SYM_2_habitat_fixed$loglik #-335.3544
+
+rate.mat = fit_ARD_2.1.h$index.mat
+p = get_p(rate.mat,fit_ARD_2.1.h$solution)
+ARD_2_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 2, rate.mat = rate.mat, p = p)
+ARD_2_habitat_fixed$loglik #-326.1312
+
+rate.mat = fit_ER_3.1.h$index.mat
+p = get_p(rate.mat, fit_ER_3.1.h$solution)
+ER_3_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 3, rate.mat = rate.mat, p = p)
+ER_3_habitat_fixed$loglik #-366.1427
+
+rate.mat = fit_SYM_3.1.h$index.mat
+p = get_p(rate.mat, fit_SYM_3.1.h$solution)
+SYM_3_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 3, rate.mat = rate.mat, p = p)
+SYM_3_habitat_fixed$loglik #-322.9608
+
+rate.mat = fit_ARD_3.1.h$index.mat
+p = get_p(rate.mat, fit_ARD_3.1.h$solution)
+ARD_3_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 3, rate.mat = rate.mat, p = p)
+ARD_3_habitat_fixed$loglik #-315.7502
+
+rate.mat = fit_ER_4.1.h$index.mat
+p = get_p(rate.mat, fit_ER_4.1.h$solution)
+ER_4_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 4, rate.mat = rate.mat, p = p)
+ER_4_habitat_fixed$loglik #-373.808
+
+rate.mat = fit_SYM_4.1.h$index.mat
+p = get_p(rate.mat, fit_SYM_4.1.h$solution)
+SYM_4_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 4, rate.mat = rate.mat, p = p)
+SYM_4_habitat_fixed$loglik #-313.3884
+
+rate.mat = fit_ARD_4.1.h$index.mat
+p = get_p(rate.mat, fit_ARD_4.1.h$solution)
+ARD_4_habitat_fixed = corHMM(phy = pruned_tree_habitat, data = corhmm_data_habitat, rate.cat = 4, rate.mat = rate.mat, p = p)
+ARD_4_habitat_fixed$loglik #-304.2163
+
+```
 
 
