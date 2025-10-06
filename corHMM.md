@@ -65,7 +65,7 @@ which(rowSums(is.na(snake.data)) > 0)
 #snake.data_poly_tree <- na.omit(snake.data_poly)
 
 ```
-### 3) Tree plotting habitat and reproductive states at tips
+### 2) Tree plotting habitat and reproductive states at tips
 
 ```
 ###############################################################################
